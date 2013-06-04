@@ -1,0 +1,13 @@
+{
+  "name": "running-automated-tests-quickly",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib": "~0.6.1",
+    "grunt-regarde": "~0.1.1",
+    "grunt-notify": "~0.2.3"
+  },
+  "dependencies": {
+    "marked": "~0.2.9"
+  }
+}

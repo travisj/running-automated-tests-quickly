@@ -1,0 +1,281 @@
+<html lang="en">
+<head>
+		<meta charset="utf-8">
+
+		<title>Using Grunt to quickly run your Jasmine unit tests</title>
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="lib/reveal/css/reveal.css" type="text/css" media="screen" charset="utf-8">
+		<link rel="stylesheet" href="lib/reveal/css/theme/serif.css" type="text/css" media="screen" charset="utf-8">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/reveal/lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="lib/reveal/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+</head>
+<body>
+	<div class="reveal">
+		<div class="slides">
+
+		<section data-markdown>
+		<script type="text/template">
+			# Grunt + Jasmine
+			### Getting faster feedback from the tests you write
+			##### Travis Johnson / AppNexus
+		</script>
+		</section>
+
+		<!--
+		<section data-markdown>
+		<script type="text/template">
+			### Travis Johnson
+			#### Director of Engineering at AppNexus
+			#### [tjohnson@appnexus.com](mailto:tjohnson@appnexus.com)
+		</script>
+		</section>
+		-->
+
+		<section data-markdown>
+		<script type="text/template">
+		### Creating a testing culture
+		</script>
+		</section>
+
+		<section data-markdown>
+		<script type="text/template">
+		![db](images/db.png)
+		### <a href="http://www.youtube.com/watch?v=QvHf94hxzRc" target="_blank">Engineering@Scale: Building & Scaling a Test-Driven Culture</a>
+		<aside class="notes">
+		Daniel Doubrovkine (do-brove-kin)
+		</aside>
+		</script>
+		</section>
+
+		<section>
+		<h3>Jenkins + Jasmine</h3>
+		Jenkins runs our unit tests on each check-in...
+		</section>
+
+		<section data-markdown>
+		<script type="text/template">
+		...but that is not fast enough.
+		</script>
+		</section>
+
+		<section>
+		<img src="images/grunt.png">
+		<h3>The JavaScript Task Runner</h3>
+		</section>
+
+		<!--
+		<section>
+		<h2>Grunt plugins</h2>
+		<ul>
+			<li><a target="_blank" href="https://github.com/gruntjs/grunt-contrib-jasmine">grunt-contrib-jasmine</a>: for running from CLI</li>
+			<li><a target="_blank" href="https://github.com/gruntjs/grunt-contrib-livereload">grunt-contrib-livereload</a>: for running in the browser</li>
+		</ul>
+		</section>
+		-->
+
+		<section>
+		<h2>grunt-contrib-jasmine</h2>
+		<p>Install with:</p>
+		<pre><code data-trim>
+		$ npm install grunt-contrib-jasmine --save-dev
+		</code></pre>
+		<p>Enable in Gruntfile with:</p>
+		<pre><code data-trim>
+		grunt.loadNpmTasks('grunt-contrib-jasmine');
+		</code></pre>
+		</section>
+
+		<section>
+		<h3>Gruntfile.js</h3>
+		<pre><code data-trim class="javascript">
+module.exports = function(grunt) {
+	grunt.initConfig({
+		jasmine: {
+			src: 'src/**/*.js',
+			options: {
+				specs: 'spec/**/*.js'
+			}
+		}
+	});
+	grunt.loadNpmTasks('grunt-contrib');
+	grunt.registerTask('test', ['jasmine']);
+}
+		</code></pre>
+		</section>
+
+		<section>
+		<h3>Run your tests</h3>
+		<pre><code data-trim class="javascript">
+		$ grunt test
+		</code></pre>
+		<pre><code data-trim class="javascript">
+Running "jasmine:src" (jasmine) task
+Testing jasmine specs via phantom
+...
+3 specs in 0.001s.
+>> 0 failures
+
+Done, without errors.
+		</code></pre>
+		</section>
+
+		<section data-markdown>
+		<script type="text/template">
+		### Running tests in the browser
+		#### And automatically retesting anytime a file changes
+		</script>
+		</section>
+
+		<section>
+		<h3>Gruntfile.js</h3>
+		<pre><code data-trim class="javascript">
+module.exports = function(grunt) {
+	grunt.initConfig({
+		livereload: ..., 
+		connect: ...,
+		regarde: ...
+	});
+
+	grunt.loadNpmTasks('grunt-regarde');
+	grunt.loadNpmTasks('grunt-contrib');
+
+	grunt.registerTask('dev', ['livereload-start', 'connect', 'regarde']);
+};
+		</code></pre>
+		</section>
+
+		<section>
+		<h3><a target="_blank" href="https://github.com/gruntjs/grunt-contrib-livereload">grunt-contrib-livereload</a></h3>
+		<pre><code data-trim class="javascript">
+livereload: {
+	port: 35729
+}
+		</code></pre>
+		</section>
+
+		<section>
+		<h3><a target="_blank" href="https://github.com/gruntjs/grunt-contrib-connect">grunt-contrib-connect</a></h3>
+		<pre><code data-trim class="javascript">
+connect: {
+	server: {
+		options: {
+			port: 8558,
+			base: 'public/',
+			middleware: function(connect, options) {
+				return [
+					require('grunt-contrib/node_modules/grunt-contrib-livereload/lib/utils').livereloadSnippet, 
+					connect.static(require('path').resolve(options.base))
+				];
+			}
+		}
+	}
+}
+		</code></pre>
+		</section>
+
+		<section>
+		<h3><a target="_blank" href="https://github.com/yeoman/grunt-regarde">grunt-regarde</a></h3>
+		<pre><code data-trim class="javascript">
+regarde: {
+	all: {
+		files: ['src/**', 'spec/**'],
+		tasks: ['build', 'livereload']
+	}
+}
+		</code></pre>
+		<p>* Ideally we'd use <a target="_blank" href="https://github.com/yeoman/grunt-contrib-watch">grunt-contrib-watch</a>, but there is a bug that does not allow it to work with livereload
+		</section>
+
+		<section data-markdown>
+		<script type="text/template">
+		![screenshot](images/jasmine-results.png)
+		## <a href="http://localhost:8558/testRunner.html" target="_blank">Try it out</a></h2>
+		</script>
+		</section>
+
+		<section data-markdown>
+		<script type="text/template">
+			here's where you can find more information on the tools presented
+		</script>
+		</section>
+
+		<section data-markdown>
+		<script type="text/template">
+			# Contact me
+			## Travis Johnson
+			## [tjohnson@appnexus.com](mailto:tjohnson@appnexus.com)
+		</script>
+		</section>
+
+		</div>
+	</div>
+
+	<script src="lib/reveal/lib/js/head.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="lib/marked.js" type="text/javascript" charset="utf-8"></script>
+	<script src="lib/reveal/js/reveal.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+		Reveal.initialize({
+			// Display controls in the bottom right corner
+			controls: true,
+
+			// Display a presentation progress bar
+			progress: true,
+
+			// Push each slide change to the browser history
+			history: false,
+
+			// Enable keyboard shortcuts for navigation
+			keyboard: true,
+
+			// Enable the slide overview mode
+			overview: true,
+
+			// Loop the presentation
+			loop: false,
+
+			// Number of milliseconds between automatically proceeding to the 
+			// next slide, disabled when set to 0, this value can be overwritten
+			// by using a data-autoslide attribute on your slides
+			autoSlide: 0,
+
+			// Enable slide navigation via mouse wheel
+			mouseWheel: true,
+
+			// Apply a 3D roll to links on hover
+			rollingLinks: true,
+
+			// Transition style
+			transition: 'default', // default/cube/page/concave/zoom/linear/none
+
+// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/reveal/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					//{ src: 'lib/reveal/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'lib/reveal/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'lib/reveal/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'lib/reveal/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'lib/reveal/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					//{ src: 'lib/reveal/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } },
+					//{ src: 'lib/reveal/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+		});	
+
+	</script>
+</body>
+</html>
