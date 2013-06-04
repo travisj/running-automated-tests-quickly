@@ -105,16 +105,16 @@
 		<h3>Gruntfile.js</h3>
 		<pre><code data-trim class="javascript">
 module.exports = function(grunt) {
-	grunt.initConfig({
-		jasmine: {
-			src: 'src/**/*.js',
-			options: {
-				specs: 'spec/**/*.js'
-			}
-		}
-	});
-	grunt.loadNpmTasks('grunt-contrib');
-	grunt.registerTask('test', ['jasmine']);
+  grunt.initConfig({
+    jasmine: {
+      src: 'src/**/*.js',
+      options: {
+        specs: 'spec/**/*.js'
+      }
+    }
+  });
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
+  grunt.registerTask('test', ['jasmine']);
 }
 		</code></pre>
 		</section>
@@ -125,7 +125,7 @@ module.exports = function(grunt) {
 		$ grunt test
 		</code></pre>
 		<pre><code data-trim class="javascript">
-Running "jasmine:src" (jasmine) task
+Running "jasmine:examples" (jasmine) task
 Testing jasmine specs via phantom
 ...
 3 specs in 0.001s.
@@ -137,89 +137,96 @@ Done, without errors.
 
 		<section data-markdown>
 		<script type="text/template">
-		### Running tests in the browser
-		#### And automatically retesting anytime a file changes
+		## Nice, but...
+		<aside class="notes">
+		I want to run these tests faster, easier, etc
+		</aside>
+		</script>
+		</section>
+
+		<section data-markdown>
+		<script type="text/template">
+			### Let's use Grunt to continuously run these for us.
 		</script>
 		</section>
 
 		<section>
-		<h3>Gruntfile.js</h3>
+		<h2>grunt-regarde</h2>
+		<p>Install with:</p>
+		<pre><code data-trim>
+		$ npm install grunt-regarde --save-dev
+		</code></pre>
+		<p>Enable in Gruntfile with:</p>
+		<pre><code data-trim>
+		grunt.loadNpmTasks('grunt-regarde');
+		</code></pre>
+		</section>
+
+		<section data-markdown>
+		<script type="text/template">
+		### Gruntfile.js</h3>
 		<pre><code data-trim class="javascript">
 module.exports = function(grunt) {
 	grunt.initConfig({
-		livereload: ..., 
-		connect: ...,
-		regarde: ...
-	});
+    jasmine: {...},
+    regarde: {
+      tests: {
+        files: ['src/**', 'spec/**'],
+        tasks: ['test']
+      }
+    },
+  });
 
-	grunt.loadNpmTasks('grunt-regarde');
-	grunt.loadNpmTasks('grunt-contrib');
+  grunt.loadNpmTasks('grunt-regarde');
 
-	grunt.registerTask('dev', ['livereload-start', 'connect', 'regarde']);
-};
+  grunt.registerTask('test', ['jasmine']);
+  grunt.registerTask('test-reload', ['test', 'regarde:tests']);
+}
 		</code></pre>
+		</script>
+		</section>
+	
+		<section data-markdown>
+		<script type="text/template">
+			### Run with:
+			<pre><code data-trim class="javascript">
+			$ grunt test-reload --force
+			</code></pre>
+		</script>
+		<aside class="notes">
+		--force is required due to an issue with regarde - will 
+		keep running tests on failure
+		</aside>
 		</section>
 
 		<section>
-		<h3><a target="_blank" href="https://github.com/gruntjs/grunt-contrib-livereload">grunt-contrib-livereload</a></h3>
-		<pre><code data-trim class="javascript">
-livereload: {
-	port: 35729
-}
+		<h2>grunt-notify</h2>
+		<p>Install with:</p>
+		<pre><code data-trim>
+		$ npm install grunt-notify --save-dev
 		</code></pre>
-		</section>
-
-		<section>
-		<h3><a target="_blank" href="https://github.com/gruntjs/grunt-contrib-connect">grunt-contrib-connect</a></h3>
-		<pre><code data-trim class="javascript">
-connect: {
-	server: {
-		options: {
-			port: 8558,
-			base: 'public/',
-			middleware: function(connect, options) {
-				return [
-					require('grunt-contrib/node_modules/grunt-contrib-livereload/lib/utils').livereloadSnippet, 
-					connect.static(require('path').resolve(options.base))
-				];
-			}
-		}
-	}
-}
+		<p>Enable in Gruntfile with:</p>
+		<pre><code data-trim>
+		grunt.loadNpmTasks('grunt-notify');
 		</code></pre>
-		</section>
-
-		<section>
-		<h3><a target="_blank" href="https://github.com/yeoman/grunt-regarde">grunt-regarde</a></h3>
-		<pre><code data-trim class="javascript">
-regarde: {
-	all: {
-		files: ['src/**', 'spec/**'],
-		tasks: ['build', 'livereload']
-	}
-}
-		</code></pre>
-		<p>* Ideally we'd use <a target="_blank" href="https://github.com/yeoman/grunt-contrib-watch">grunt-contrib-watch</a>, but there is a bug that does not allow it to work with livereload
 		</section>
 
 		<section data-markdown>
 		<script type="text/template">
-		![screenshot](images/jasmine-results.png)
-		## <a href="http://localhost:8558/testRunner.html" target="_blank">Try it out</a></h2>
+			### Resources
+			* [Grunt](http://gruntjs.com/)
+			* [Jasmine](http://pivotal.github.io/jasmine/)
+			* [grunt-contrib-jasmine](https://github.com/gruntjs/grunt-contrib-jasmine)
+			* [grunt-regarde](https://github.com/yeoman/grunt-regarde)
+			* [grunt-notify](https://github.com/dylang/grunt-notify)
 		</script>
 		</section>
 
 		<section data-markdown>
 		<script type="text/template">
-			here's where you can find more information on the tools presented
-		</script>
-		</section>
-
-		<section data-markdown>
-		<script type="text/template">
-			# Contact me
-			## Travis Johnson
-			## [tjohnson@appnexus.com](mailto:tjohnson@appnexus.com)
+			### Contact me
+			#### Travis Johnson
+			#### [tjohnson@appnexus.com](mailto:tjohnson@appnexus.com)
 		</script>
 		</section>
 

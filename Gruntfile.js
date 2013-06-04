@@ -2,29 +2,14 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		jasmine: {
-			src: 'src/**/*.js',
+			examples: 'src/**/*.js',
 			options: {
 				specs: 'spec/**/*.js',
 				keepAlive: true,
 				onfail: ['notify:fail']
 			}
 		},
-		livereload: {
-			port: 35729
-		},
 		connect: {
-			tests: {
-				options: {
-					port: 8558,
-					base: 'public/',
-					middleware: function(connect, options) {
-						return [
-							require('grunt-contrib/node_modules/grunt-contrib-livereload/lib/utils').livereloadSnippet, 
-							connect.static(require('path').resolve(options.base))
-						];
-					}
-				}
-			},
 			presentation: {
 				options: {
 					port: 8559,
@@ -33,13 +18,13 @@ module.exports = function(grunt) {
 			}
 		},
 		regarde: {
-			all: {
-				files: ['src/**', 'spec/**'],
-				tasks: ['build', 'livereload']
-			},
-			cli: {
+			tests: {
 				files: ['src/**', 'spec/**'],
 				tasks: ['test']
+			},
+			presentation: {
+				files: ['src/**'],
+				tasks: ['build']
 			}
 		},
 		clean: {
@@ -65,16 +50,18 @@ module.exports = function(grunt) {
 	});
 
 	grunt.loadNpmTasks('grunt-regarde');
-	//grunt.loadNpmTasks('grunt-contrib-jasmine');
-	grunt.loadNpmTasks('grunt-contrib');
+	grunt.loadNpmTasks('grunt-contrib-jasmine');
 	grunt.loadNpmTasks('grunt-notify');
 
 	grunt.registerTask('test', ['jasmine']);
-	grunt.registerTask('test-reload', ['regarde:cli']);
-	grunt.registerTask('build', ['clean:build', 'copy:build']);
-	grunt.registerTask('dev', ['livereload-start', 'connect', 'build', 'regarde:all']);
+	grunt.registerTask('test-reload', ['test', 'regarde:tests']);
 
-	grunt.task.registerTask('travis', 'a test from travis', function() {
-		grunt.log.writeln('holla');
+	// for presentation
+	grunt.loadNpmTasks('grunt-contrib');
+	grunt.registerTask('build', ['clean:build', 'copy:build']);
+	grunt.registerTask('presentation', ['build', 'connect', 'regarde:presentation']);
+
+	grunt.task.registerTask('echo', 'a test from travis', function() {
+		grunt.log.writeln('echo');
 	});
 };
