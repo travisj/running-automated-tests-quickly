@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		jasmine: {
@@ -39,14 +40,6 @@ module.exports = function(grunt) {
 					{expand: true, cwd: 'node_modules/marked/lib/', src: ['**'], dest: 'public/lib'}
 				]
 			}
-		},
-		notify: {
-			fail: {
-				options: {
-					title: "Test Failed",
-					message: "test failed"
-				}
-			}
 		}
 	});
 
@@ -61,8 +54,4 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib');
 	grunt.registerTask('build', ['clean:build', 'copy:build']);
 	grunt.registerTask('presentation', ['build', 'connect', 'regarde:presentation']);
-
-	grunt.task.registerTask('echo', 'a test from travis', function() {
-		grunt.log.writeln('echo');
-	});
 };

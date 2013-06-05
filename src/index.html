@@ -32,7 +32,8 @@
 		<section data-markdown>
 		<script type="text/template">
 			# Grunt + Jasmine
-			### Getting faster feedback from the tests you write
+			### Getting faster feedback 
+			### from your tests
 			##### Travis Johnson / AppNexus
 		</script>
 		</section>
@@ -49,7 +50,13 @@
 
 		<section data-markdown>
 		<script type="text/template">
-		### Creating a testing culture
+		### Started creating a Testing Culture about six months ago.
+		</script>
+		</section>
+
+		<section data-markdown>
+		<script type="text/template">
+		### We had some tests, but it wasn't a given that tests would get written for new features.
 		</script>
 		</section>
 
@@ -74,20 +81,12 @@
 		</script>
 		</section>
 
-		<section>
-		<img src="images/grunt.png">
-		<h3>The JavaScript Task Runner</h3>
+		<section data-markdown>
+		<script type="text/template">
+		![grunt](images/grunt.png)
+		### The JavaScript Task Runner
+		</script>
 		</section>
-
-		<!--
-		<section>
-		<h2>Grunt plugins</h2>
-		<ul>
-			<li><a target="_blank" href="https://github.com/gruntjs/grunt-contrib-jasmine">grunt-contrib-jasmine</a>: for running from CLI</li>
-			<li><a target="_blank" href="https://github.com/gruntjs/grunt-contrib-livereload">grunt-contrib-livereload</a>: for running in the browser</li>
-		</ul>
-		</section>
-		-->
 
 		<section>
 		<h2>grunt-contrib-jasmine</h2>
@@ -167,7 +166,7 @@ Done, without errors.
 		### Gruntfile.js</h3>
 		<pre><code data-trim class="javascript">
 module.exports = function(grunt) {
-	grunt.initConfig({
+  grunt.initConfig({
     jasmine: {...},
     regarde: {
       tests: {
@@ -177,6 +176,7 @@ module.exports = function(grunt) {
     },
   });
 
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-regarde');
 
   grunt.registerTask('test', ['jasmine']);
@@ -192,6 +192,7 @@ module.exports = function(grunt) {
 			<pre><code data-trim class="javascript">
 			$ grunt test-reload --force
 			</code></pre>
+			Without --force, grunt will stop running on test failure.
 		</script>
 		<aside class="notes">
 		--force is required due to an issue with regarde - will 
