@@ -2,17 +2,18 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		jasmine: {
-			examples: 'src/**/*.js',
+			all: 'src/**/*.js',
 			options: {
 				specs: 'spec/**/*.js',
+				helpers: ['lib/underscore-min.js'],
 				keepAlive: true,
-				onfail: ['notify:fail']
+				keepRunner: true
 			}
 		},
 		connect: {
 			presentation: {
 				options: {
-					port: 8559,
+					port: 8558,
 					base: 'public/'
 				}
 			}
