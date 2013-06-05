@@ -21,4 +21,22 @@ describe('Neighborhood search', function() {
 			return data.name === 'Williamsburg';
 		})).not.toEqual(undefined);
 	});
+
+	it('Should find similar neighborhoods', function() {
+		var pdx2bk = new Pdx2bk();
+		var similarToThePearl = pdx2bk.findSimilar("The Pearl");
+		expect(similarToThePearl.length).toEqual(1);
+	});
+});
+
+describe('Test helper methods', function() {
+	it('Should add unique object to list', function() {
+		var pdx2bk = new Pdx2bk();
+		var list = [
+			{name: 'One'},
+			{name: 'Two'}
+		];
+		expect(pdx2bk.helper.addToList(list, [{name: 'Three'}]).length).toEqual(3);
+		expect(pdx2bk.helper.addToList(list, [{name: 'Three'}]).length).toEqual(3);
+	});
 });
