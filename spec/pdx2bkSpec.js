@@ -24,7 +24,7 @@ describe('Neighborhood search', function() {
 
 	it('Should find similar neighborhoods', function() {
 		var pdx2bk = new Pdx2bk();
-		var similarToThePearl = pdx2bk.findSimilar("The Pearl");
+		var similarToThePearl = pdx2bk.findSimilar("The Pearl District");
 		expect(similarToThePearl.length).toEqual(1);
 	});
 });
